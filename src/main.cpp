@@ -134,6 +134,8 @@ void opcontrol() {
     bool clampOn = false;
     bool climb = false;
     bool intake = false;
+    int lIntake = 0;
+    int uIntake = 0;
 
     while (true) {
         // PID Tuner
@@ -177,23 +179,47 @@ void opcontrol() {
 
         if (master.get_digital_new_press(DIGITAL_B)) {
             intake = !intake;
-            climbClamp.set_value(intake);
+            intakeLift.set_value(intake);
         }
 
-        if (master.get_digital(DIGITAL_R1)) {
-            Intake1.move(127);
-        } else if (master.get_digital(DIGITAL_R2)) {
-            Intake1.move(-127);
-        } else {
-            Intake1.move(0);
+        if (master.get_digital_new_press(DIGITAL_R1)) {
+            if(lIntake == 1) {
+                lIntake = 0;
+                Intake1.move(0);
+            } else if (lIntake != 1) {
+                lIntake = 1;
+                Intake1.move(0);
+            }
+        }
+        
+        if(master.get_digital_new_press(DIGITAL_R2)){
+            if(lIntake == -1) {
+                lIntake = 0;
+                Intake1.move(0);
+            } else if (lIntake != -1) {
+                lIntake = -1;
+                Intake1.move(0);
+            }
         }
 
-        if (master.get_digital(DIGITAL_L1)) {
-            Intake2.move(127);
-        } else if (master.get_digital(DIGITAL_L2)) {
-            Intake2.move(-127);
-        } else {
-            Intake2.move(0);
+        if (master.get_digital_new_press(DIGITAL_L1)) {
+            if(uIntake == 1) {
+                uIntake = 0;
+                Intake2.move(0);
+            } else if (uIntake != 1) {
+                lIntake = 1;
+                Intake2.move(0);
+            }
+        }
+        
+        if(master.get_digital_new_press(DIGITAL_L2)){
+            if(lIntake == -1) {
+                uIntake = 0;
+                Intake2.move(0);
+            } else if (uIntake != -1) {
+                uIntake = -1;
+                Intake2.move(0);
+            }
         }
 
         pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
