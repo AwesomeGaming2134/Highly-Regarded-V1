@@ -14,7 +14,9 @@
 // https://ez-robotics.github.io/EZ-Template/
 /////
 
-pros::adi::DigitalOut moGoClamp('A');
+pros::adi::DigitalOut climbClamp('A');
+pros::adi::DigitalOut moGoClamp('B');
+pros::adi::DigitalOut intakeLift('C');
 pros::Motor Intake1 (14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
 pros::Motor Intake2 (-16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
 pros::Controller master (pros::E_CONTROLLER_MASTER);
@@ -22,7 +24,7 @@ pros::Controller master (pros::E_CONTROLLER_MASTER);
 // Chassis constructor
 ez::Drive chassis(
     // These are your drive motors, the first motor is used for sensing!
-    {-4, -5, -6},  // Left Chassis Ports (negative port will reverse it!)
+    {-5, -6, -8},  // Left Chassis Ports (negative port will reverse it!)
     {7, 9, 12},    // Right Chassis Ports (negative port will reverse it!)
 
     7,      // IMU Port
@@ -130,25 +132,28 @@ void opcontrol() {
     chassis.drive_brake_set(driver_preference_brake);
 
     bool clampOn = false;
+    bool climb = false;
+    bool intake = false;
+
     while (true) {
         // PID Tuner
         // After you find values that you're happy with, you'll have to set them in auton.cpp
-        if (!pros::competition::is_connected()) {
-        // Enable / Disable PID Tuner
-        //  When enabled:
-        //  * use A and Y to increment / decrement the constants
-        //  * use the arrow keys to navigate the constants
-            if (master.get_digital_new_press(DIGITAL_X))
-                chassis.pid_tuner_toggle();
+        // if (!pros::competition::is_connected()) {
+        // // Enable / Disable PID Tuner
+        // //  When enabled:
+        // //  * use A and Y to increment / decrement the constants
+        // //  * use the arrow keys to navigate the constants
+        //     if (master.get_digital_new_press(DIGITAL_X))
+        //         chassis.pid_tuner_toggle();
 
-        // Trigger the selected autonomous routine
-            if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
-                autonomous();
-                chassis.drive_brake_set(driver_preference_brake);
-            }
+        // // Trigger the selected autonomous routine
+        //     if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
+        //         autonomous();
+        //         chassis.drive_brake_set(driver_preference_brake);
+        //     }
 
-            chassis.pid_tuner_iterate();  // Allow PID Tuner to iterate
-        }
+        //     chassis.pid_tuner_iterate();  // Allow PID Tuner to iterate
+        // }
 
         // chassis.opcontrol_tank();  // Tank control
         chassis.opcontrol_arcade_standard(ez::SPLIT);  // Standard split arcade
@@ -160,11 +165,20 @@ void opcontrol() {
         // Put more user control code here!
         // . . .
 
-        if (master.get_digital_new_press(DIGITAL_A)) {
+        if (master.get_digital_new_press(DIGITAL_A)) { // <- conflict w pid tuner button
             clampOn = !clampOn;
             moGoClamp.set_value(clampOn);
         }
 
+        if (master.get_digital_new_press(DIGITAL_Y)) {
+            climb = !climb;
+            climbClamp.set_value(climb);
+        }
+
+        if (master.get_digital_new_press(DIGITAL_B)) {
+            intake = !intake;
+            climbClamp.set_value(intake);
+        }
 
         if (master.get_digital(DIGITAL_R1)) {
             Intake1.move(127);
