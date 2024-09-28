@@ -188,7 +188,7 @@ void opcontrol() {
                 Intake1.move(0);
             } else if (lIntake != 1) {
                 lIntake = 1;
-                Intake1.move(0);
+                Intake1.move(127);
             }
         }
         
@@ -198,7 +198,7 @@ void opcontrol() {
                 Intake1.move(0);
             } else if (lIntake != -1) {
                 lIntake = -1;
-                Intake1.move(0);
+                Intake1.move(-127);
             }
         }
 
@@ -208,7 +208,7 @@ void opcontrol() {
                 Intake2.move(0);
             } else if (uIntake != 1) {
                 lIntake = 1;
-                Intake2.move(0);
+                Intake2.move(127);
             }
         }
         
@@ -218,7 +218,7 @@ void opcontrol() {
                 Intake2.move(0);
             } else if (uIntake != -1) {
                 uIntake = -1;
-                Intake2.move(0);
+                Intake2.move(-127);
             }
         }
 
