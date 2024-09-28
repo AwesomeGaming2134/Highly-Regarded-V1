@@ -207,13 +207,13 @@ void opcontrol() {
                 uIntake = 0;
                 Intake2.move(0);
             } else if (uIntake != 1) {
-                lIntake = 1;
+                uIntake = 1;
                 Intake2.move(127);
             }
         }
         
         if(master.get_digital_new_press(DIGITAL_L2)){
-            if(lIntake == -1) {
+            if(uIntake == -1) {
                 uIntake = 0;
                 Intake2.move(0);
             } else if (uIntake != -1) {
