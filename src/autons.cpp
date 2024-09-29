@@ -15,7 +15,7 @@ const int SWING_SPEED = 90;
 ///
 void default_constants() {
   chassis.pid_heading_constants_set(11, 0, 20);
-  chassis.pid_drive_constants_set(20, 0, 100);
+  chassis.pid_drive_constants_set(16, 8, 123);
   chassis.pid_turn_constants_set(3, 0.05, 20, 15);
   chassis.pid_swing_constants_set(6, 0, 65);
 
@@ -41,12 +41,15 @@ void drive_example() {
 
   chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+  pros::delay(2000);
 
   chassis.pid_drive_set(-12_in, DRIVE_SPEED);
   chassis.pid_wait();
+  pros::delay(2000);
 
   chassis.pid_drive_set(-12_in, DRIVE_SPEED);
   chassis.pid_wait();
+  pros::delay(2000);
 }
 
 ///

@@ -27,8 +27,8 @@ ez::Drive chassis(
     {-5, -6, -8},  // Left Chassis Ports (negative port will reverse it!)
     {7, 9, 12},    // Right Chassis Ports (negative port will reverse it!)
 
-    7,      // IMU Port
-    4.125,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
+    1,      // IMU Port
+    3.25,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
     450);   // Wheel RPM
 
 /**
@@ -103,6 +103,7 @@ void competition_initialize() {
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
+
 void autonomous() {
     chassis.pid_targets_reset();                // Resets PID targets to 0
     chassis.drive_imu_reset();                  // Reset gyro position to 0
@@ -110,6 +111,7 @@ void autonomous() {
     chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
 
     ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
+    master.rumble(".");
 }
 
 /**
