@@ -10,13 +10,19 @@ const int DRIVE_SPEED = 110;
 const int TURN_SPEED = 90;
 const int SWING_SPEED = 90;
 
+pros::adi::DigitalOut AutonClimbClamp('A');
+pros::adi::DigitalOut AutonMoGoClamp('B');
+pros::adi::DigitalOut AutonIntakeLift('C');
+pros::Motor AutonIntake1 (14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
+pros::Motor AutonIntake2 (-16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
+
 ///
 // Constants
 ///
 void default_constants() {
   chassis.pid_heading_constants_set(11, 0, 20);
   chassis.pid_drive_constants_set(16, 8, 123);
-  chassis.pid_turn_constants_set(3, 0.05, 20, 15);
+  chassis.pid_turn_constants_set(4, 0.2, 32, 15);
   chassis.pid_swing_constants_set(6, 0, 65);
 
   chassis.pid_turn_exit_condition_set(80_ms, 3_deg, 250_ms, 7_deg, 500_ms, 500_ms);
@@ -28,6 +34,10 @@ void default_constants() {
   chassis.pid_drive_chain_constant_set(3_in);
 
   chassis.slew_drive_constants_set(7_in, 80);
+}
+
+void backwards_constants() {
+  chassis.pid_drive_constants_set(10, 4, 25.2);
 }
 
 ///
@@ -42,6 +52,8 @@ void drive_example() {
   chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   pros::delay(2000);
+
+  backwards_constants();
 
   chassis.pid_drive_set(-12_in, DRIVE_SPEED);
   chassis.pid_wait();
@@ -61,12 +73,16 @@ void turn_example() {
 
   chassis.pid_turn_set(90_deg, TURN_SPEED);
   chassis.pid_wait();
+  pros::delay(2000);
 
   chassis.pid_turn_set(45_deg, TURN_SPEED);
   chassis.pid_wait();
+  pros::delay(2000);
 
   chassis.pid_turn_set(0_deg, TURN_SPEED);
   chassis.pid_wait();
+  pros::delay(2000);
+
 }
 
 ///
@@ -224,3 +240,139 @@ void interfered_example() {
 // . . .
 // Make your own autonomous functions here!
 // . . .
+void right_side_b() {
+  AutonIntake1.move(-127);
+  AutonMoGoClamp.set_value(true);
+  pros::delay(100);
+  AutonIntake1.move(127);
+  chassis.pid_drive_set(16_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(90, TURN_SPEED);
+  chassis.pid_wait();
+  AutonIntakeLift.set_value(true);
+  chassis.pid_drive_set(6_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(11_in, 20);
+  chassis.pid_wait();
+  backwards_constants();
+  AutonIntakeLift.set_value(false);
+  chassis.pid_drive_set(-2_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(60, TURN_SPEED);
+  chassis.pid_wait();
+  AutonIntake1.move(0);
+  chassis.pid_drive_set(-38_in, 60);
+  pros::delay(700);
+  AutonMoGoClamp.set_value(false);
+  AutonIntake2.move(127);
+  pros::delay(500);
+  AutonIntake1.move(127);
+  pros::delay(2000);
+  chassis.pid_turn_set(180, TURN_SPEED);
+  chassis.pid_wait();
+  AutonIntake1.move(0);
+  chassis.pid_drive_set(50_in, 127);
+  chassis.pid_wait();
+}
+
+void right_side_r() {
+  AutonIntake1.move(-127);
+  AutonMoGoClamp.set_value(true);
+  pros::delay(100);
+  AutonIntake1.move(127);
+  chassis.pid_drive_set(16_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-90, TURN_SPEED);
+  chassis.pid_wait();
+  AutonIntakeLift.set_value(true);
+  chassis.pid_drive_set(6_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(11_in, 20);
+  chassis.pid_wait();
+  backwards_constants();
+  AutonIntakeLift.set_value(false);
+  chassis.pid_drive_set(-2_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-60, TURN_SPEED);
+  chassis.pid_wait();
+  AutonIntake1.move(0);
+  chassis.pid_drive_set(-38_in, 60);
+  pros::delay(700);
+  AutonMoGoClamp.set_value(false);
+  AutonIntake2.move(127);
+  pros::delay(500);
+  AutonIntake1.move(127);
+  pros::delay(2000);
+  chassis.pid_turn_set(-180, TURN_SPEED);
+  chassis.pid_wait();
+  AutonIntake1.move(0);
+  chassis.pid_drive_set(50_in, 127);
+  chassis.pid_wait();
+  
+
+
+  // AutonIntake1.move(-127);
+  // AutonMoGoClamp.set_value(true);
+  // pros::delay(100);
+  // AutonIntake1.move(127);
+  // chassis.pid_drive_set(38_in, DRIVE_SPEED, true);
+  // chassis.pid_wait();
+
+  // chassis.pid_turn_relative_set(90, TURN_SPEED);
+  // chassis.pid_wait();
+  // backwards_constants();
+  // chassis.pid_drive_set(-26_in, 60);
+  // pros::delay(750);
+  // AutonIntake1.move(0);
+  // AutonMoGoClamp.set_value(false);
+
+  // AutonIntake2.move(127);
+  // pros::delay(1000);
+  // AutonIntake2.move(0);
+  // chassis.pid_turn_relative_set(90, TURN_SPEED);
+  // chassis.pid_wait();
+  // default_constants();
+  // chassis.pid_drive_set(34_in, 70);
+  // chassis.pid_wait();
+  // AutonIntake2.move(127);
+  // AutonIntake1.move(127);
+
+  // backwards_constants();
+  // chassis.pid_drive_set(-12_in, 55);
+  // chassis.pid_wait();
+  // AutonIntake1.move(0);
+  // default_constants();
+  // chassis.pid_drive_set(12_in, 80);
+  // chassis.pid_wait();
+  // backwards_constants();
+
+  // chassis.pid_drive_set(-1_in, 80);
+  // chassis.pid_wait();
+  // AutonIntake1.move(127);
+  // AutonIntakeLift.set_value(true);
+  // chassis.pid_turn_relative_set(85, TURN_SPEED);
+  // chassis.pid_wait();
+  // default_constants();
+  // chassis.pid_drive_set(11_in, 90);
+  // chassis.pid_wait();
+  // AutonIntakeLift.set_value(false);
+  // chassis.pid_drive_set(1_in, 50);
+  // pros::delay(750);
+  // chassis.pid_turn_relative_set(5, TURN_SPEED);
+
+  // backwards_constants();
+  // chassis.pid_drive_set(-36_in, DRIVE_SPEED);
+  // chassis.pid_wait();
+  // chassis.pid_turn_relative_set(90, TURN_SPEED);
+  // chassis.pid_wait();
+
+  // AutonIntakeLift.set_value(true);
+  // default_constants();
+  // chassis.pid_drive_set(42_in, DRIVE_SPEED);
+  // chassis.pid_wait();
+  // AutonIntakeLift.set_value(false);
+  // pros::delay(200);
+  // backwards_constants();
+  // chassis.pid_drive_set(-2_in, DRIVE_SPEED);
+  // default_constants();
+}
