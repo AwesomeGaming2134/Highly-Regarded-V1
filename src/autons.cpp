@@ -258,11 +258,11 @@ void right_side_b() {
   AutonIntakeLift.set_value(false);
   chassis.pid_drive_set(-2_in, DRIVE_SPEED);
   chassis.pid_wait();
+  AutonIntake1.move(0);
   chassis.pid_turn_relative_set(60, TURN_SPEED);
   chassis.pid_wait();
-  AutonIntake1.move(0);
-  chassis.pid_drive_set(-38_in, 60);
-  pros::delay(700);
+  chassis.pid_drive_set(-42_in, 50, true);
+  pros::delay(1100);
   AutonMoGoClamp.set_value(false);
   AutonIntake2.move(127);
   pros::delay(500);
@@ -273,6 +273,17 @@ void right_side_b() {
   AutonIntake1.move(0);
   chassis.pid_drive_set(50_in, 127);
   chassis.pid_wait();
+}
+
+void left_side_b() {
+  AutonMoGoClamp.set_value(true);
+  backwards_constants();
+  chassis.pid_drive_set(-46_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  AutonMoGoClamp.set_value(false);
+  chassis.pid_turn_relative_set(180, 70);
+  default_constants();
+  chassis.pid_drive_set(10_in, 50);
 }
 
 void right_side_r() {
@@ -293,11 +304,11 @@ void right_side_r() {
   AutonIntakeLift.set_value(false);
   chassis.pid_drive_set(-2_in, DRIVE_SPEED);
   chassis.pid_wait();
+  AutonIntake1.move(0);
   chassis.pid_turn_relative_set(-60, TURN_SPEED);
   chassis.pid_wait();
-  AutonIntake1.move(0);
-  chassis.pid_drive_set(-38_in, 60);
-  pros::delay(700);
+  chassis.pid_drive_set(-42_in, 50, true);
+  pros::delay(1100);
   AutonMoGoClamp.set_value(false);
   AutonIntake2.move(127);
   pros::delay(500);
@@ -375,4 +386,20 @@ void right_side_r() {
   // backwards_constants();
   // chassis.pid_drive_set(-2_in, DRIVE_SPEED);
   // default_constants();
+}
+
+void prog_skills() {
+  backwards_constants();
+  AutonMoGoClamp.set_value(true);
+  chassis.pid_drive_set(-36_in, DRIVE_SPEED);
+  pros::delay(700);
+  AutonMoGoClamp.set_value(false);
+  AutonIntake2.move(127);
+  chassis.pid_turn_relative_set(90, TURN_SPEED);
+  chassis.pid_drive_set(-24_in, DRIVE_SPEED);
+  AutonMoGoClamp.set_value(true);
+  default_constants;
+  AutonClimbClamp.set_value(true);
+  chassis.pid_drive_set(102_in, DRIVE_SPEED);
+  AutonClimbClamp.set_value(false);
 }

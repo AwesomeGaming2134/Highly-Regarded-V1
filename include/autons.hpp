@@ -16,3 +16,5 @@ void interfered_example();
 void default_constants();
 void right_side_r();
 void right_side_b();
+void left_side_b();
+void prog_skills();

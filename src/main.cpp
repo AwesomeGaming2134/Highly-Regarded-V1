@@ -56,6 +56,8 @@ void initialize() {
     ez::as::auton_selector.autons_add({
         Auton("Right Side Red auton", right_side_r),
         Auton("Right Side Blue auton", right_side_b),
+        Auton("Left Side Blue auton", left_side_b),
+        Auton("Programming Skills", prog_skills),
         Auton("Example Drive\n\nDrive forward and come back.", turn_example),
         Auton("Example Turn\n\nTurn 3 times.", drive_example),
         Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
