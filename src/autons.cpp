@@ -276,6 +276,9 @@ void right_side_b() {
 }
 
 void left_side_b() {
+  AutonIntake1.move(-127);
+  pros::delay(100);
+  AutonIntake1.move(0);
   AutonMoGoClamp.set_value(true);
   backwards_constants();
   chassis.pid_drive_set(-46_in, DRIVE_SPEED, true);
