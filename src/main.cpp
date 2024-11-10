@@ -17,8 +17,8 @@
 pros::adi::DigitalOut climbClamp('A');
 pros::adi::DigitalOut moGoClamp('B');
 pros::adi::DigitalOut intakeLift('C');
-pros::Motor Intake1 (-14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
-pros::Motor Intake2 (-16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
+pros::Motor Intake1 (14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
+pros::Motor Intake2 (16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
 pros::Motor Hopper (10, pros::v5::MotorGear::red, pros::v5::MotorUnits::counts);
 pros::Controller master (pros::E_CONTROLLER_MASTER);
 
@@ -72,7 +72,9 @@ void initialize() {
     // Initialize chassis and auton selector
     chassis.initialize();
     ez::as::initialize();
-    Hopper.set_brake_mode(MOTOR_BRAKE_COAST);
+    Hopper.set_brake_mode(MOTOR_BRAKE_HOLD);
+    Hopper.set_zero_position(50);
+    Hopper.move_absolute(100, 50);
     master.rumble(".");
 }
 
@@ -188,6 +190,10 @@ void opcontrol() {
         if (master.get_digital_new_press(DIGITAL_B)) {
             intake = !intake;
             intakeLift.set_value(intake);
+            if(Hopper.get_position() < 500){
+                Hopper.move_absolute(500, 100);
+            }
+
         }
 
         if (master.get_digital_new_press(DIGITAL_R1)) {
@@ -230,14 +236,21 @@ void opcontrol() {
             }
         }
 
-        if(master.get_digital(DIGITAL_UP)){
+        if(master.get_digital(DIGITAL_UP)&& Hopper.get_position() <= 3000){
             Hopper.move(127);
         }
-        else if(master.get_digital(DIGITAL_DOWN)){
+        else if(master.get_digital(DIGITAL_DOWN) && Hopper.get_position() >= 100){
             Hopper.move(-127);
         }
         else {
             Hopper.move(0);
+        }
+
+        while(Hopper.get_position() < 90) {
+            Hopper.move_absolute(100, 50);
+        }
+        while(Hopper.get_position() > 3000) {
+            Hopper.move_absolute(3000, 50);
         }
 
         pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
