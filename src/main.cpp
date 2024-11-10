@@ -17,8 +17,9 @@
 pros::adi::DigitalOut climbClamp('A');
 pros::adi::DigitalOut moGoClamp('B');
 pros::adi::DigitalOut intakeLift('C');
-pros::Motor Intake1 (14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
+pros::Motor Intake1 (-14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
 pros::Motor Intake2 (-16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
+pros::Motor Hopper (10, pros::v5::MotorGear::red, pros::v5::MotorUnits::counts);
 pros::Controller master (pros::E_CONTROLLER_MASTER);
 
 // Chassis constructor
@@ -54,11 +55,11 @@ void initialize() {
 
     // Autonomous Selector using LLEMU
     ez::as::auton_selector.autons_add({
+        Auton("Example Drive\n\nDrive forward and come back.", drive_example), 
         Auton("Right Side Red auton", right_side_r),
         Auton("Right Side Blue auton", right_side_b),
         Auton("Left Side Blue auton", left_side_b),
         Auton("Programming Skills", prog_skills),
-        Auton("Example Drive\n\nDrive forward and come back.", turn_example),
         Auton("Example Turn\n\nTurn 3 times.", drive_example),
         Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
         Auton("Drive and Turn\n\nSlow down during drive.", wait_until_change_speed),
@@ -71,6 +72,7 @@ void initialize() {
     // Initialize chassis and auton selector
     chassis.initialize();
     ez::as::initialize();
+    Hopper.set_brake_mode(MOTOR_BRAKE_COAST);
     master.rumble(".");
 }
 
@@ -226,6 +228,16 @@ void opcontrol() {
                 uIntake = -1;
                 Intake2.move(-127);
             }
+        }
+
+        if(master.get_digital(DIGITAL_UP)){
+            Hopper.move(127);
+        }
+        else if(master.get_digital(DIGITAL_DOWN)){
+            Hopper.move(-127);
+        }
+        else {
+            Hopper.move(0);
         }
 
         pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
