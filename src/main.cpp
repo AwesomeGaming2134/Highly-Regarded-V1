@@ -5,6 +5,7 @@
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/motors.h"
+#include "pros/rtos.h"
 
 // Ports
 // 1, 2, 3, 8, 10, 11, 13, 15, 18 all bad
@@ -16,7 +17,9 @@
 
 pros::adi::DigitalOut climbClamp('A');
 pros::adi::DigitalOut moGoClamp('B');
-pros::adi::DigitalOut intakeLift('C');
+pros::adi::DigitalOut flagPiston('C');
+pros::adi::DigitalOut intakeLift('D');
+pros::adi::DigitalOut hopperPiston('E');
 pros::Motor Intake1 (14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
 pros::Motor Intake2 (16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
 pros::Motor Hopper (10, pros::v5::MotorGear::red, pros::v5::MotorUnits::counts);
@@ -38,6 +41,23 @@ ez::Drive chassis(
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
+
+typedef struct {
+    int pos;
+} motor_args;
+
+bool hopperOn = false;
+
+void resetMotor(void* params){
+    hopperOn = true;
+    int pos = ((motor_args*)params)->pos;
+    while(Hopper.get_position() > pos + 5 || Hopper.get_position() < pos - 5){
+        Hopper.move_absolute(pos, 100);
+        pros::delay(20);
+    }
+    hopperOn = false;
+}
+
 void initialize() {
     pros::delay(500);  // Stop the user from doing anything while legacy ports configure
 
@@ -74,7 +94,6 @@ void initialize() {
     ez::as::initialize();
     Hopper.set_brake_mode(MOTOR_BRAKE_HOLD);
     Hopper.set_zero_position(50);
-    Hopper.move_absolute(100, 50);
     master.rumble(".");
 }
 
@@ -135,6 +154,7 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+
 void opcontrol() {
     // This is preference to what you like to drive on
     pros::motor_brake_mode_e_t driver_preference_brake = MOTOR_BRAKE_COAST;
@@ -144,8 +164,16 @@ void opcontrol() {
     bool clampOn = false;
     bool climb = false;
     bool intake = false;
+    bool flagDown = false;
+    bool hopperDown = false;
+    bool hopperMoved = false;
     int lIntake = 0;
     int uIntake = 0;
+    int hopperCurPos = 0;
+
+
+    // pros::task_t task = pros::c::task_create(resetMotor, (void*)ma, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Task Name");
+    // pros::Task cpptask (task);
 
     while (true) {
         // PID Tuner
@@ -187,13 +215,36 @@ void opcontrol() {
             climbClamp.set_value(climb);
         }
 
+        if (master.get_digital_new_press(DIGITAL_X)) {
+            hopperDown = !hopperDown;
+            hopperPiston.set_value(hopperDown);
+        }
+
+        if (master.get_digital_new_press(DIGITAL_RIGHT)) {
+            flagDown = !flagDown;
+            flagPiston.set_value(flagDown);
+        }
+
         if (master.get_digital_new_press(DIGITAL_B)) {
             intake = !intake;
-            intakeLift.set_value(intake);
-            if(Hopper.get_position() < 500){
-                Hopper.move_absolute(500, 100);
+
+            if(Hopper.get_position() < 750 && intake) {
+                hopperCurPos = Hopper.get_position();
+                hopperMoved = true;
+                motor_args* ma = new motor_args();
+                ma->pos = 750;
+                pros::Task hopperTask(resetMotor, ma);
             }
 
+            intakeLift.set_value(intake);
+
+            if(hopperMoved && !intake) {
+                hopperMoved = false;
+                motor_args* ma = new motor_args();
+                ma->pos = hopperCurPos;
+                pros::Task hopperTask(resetMotor, ma);
+                hopperCurPos = 0;
+            }
         }
 
         if (master.get_digital_new_press(DIGITAL_R1)) {
@@ -205,7 +256,7 @@ void opcontrol() {
                 Intake1.move(127);
             }
         }
-        
+    
         if(master.get_digital_new_press(DIGITAL_R2)){
             if(lIntake == -1) {
                 lIntake = 0;
@@ -236,21 +287,16 @@ void opcontrol() {
             }
         }
 
-        if(master.get_digital(DIGITAL_UP)&& Hopper.get_position() <= 3000){
+        if(master.get_digital(DIGITAL_UP)){
             Hopper.move(127);
         }
-        else if(master.get_digital(DIGITAL_DOWN) && Hopper.get_position() >= 100){
+        else if(master.get_digital(DIGITAL_DOWN)){
             Hopper.move(-127);
         }
         else {
-            Hopper.move(0);
-        }
-
-        while(Hopper.get_position() < 90) {
-            Hopper.move_absolute(100, 50);
-        }
-        while(Hopper.get_position() > 3000) {
-            Hopper.move_absolute(3000, 50);
+            if(!hopperOn) {
+                Hopper.move(0);
+            }
         }
 
         pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
