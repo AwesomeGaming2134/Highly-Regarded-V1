@@ -75,7 +75,7 @@ void initialize() {
 
     // Autonomous Selector using LLEMU
     ez::as::auton_selector.autons_add({
-        Auton("Example Drive\n\nDrive forward and come back.", drive_example), 
+        Auton("PID auton", drive_example), 
         Auton("Right Side Red auton", right_side_r),
         Auton("Right Side Blue auton", right_side_b),
         Auton("Left Side Blue auton", left_side_b),
