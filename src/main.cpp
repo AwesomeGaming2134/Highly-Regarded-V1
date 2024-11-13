@@ -16,9 +16,9 @@
 /////
 
 pros::adi::DigitalOut climbClamp('A');
-pros::adi::DigitalOut moGoClamp('B');
+pros::adi::DigitalOut intakeLift('B');
 pros::adi::DigitalOut flagPiston('C');
-pros::adi::DigitalOut intakeLift('D');
+pros::adi::DigitalOut moGoClamp('D');
 pros::adi::DigitalOut hopperPiston('E');
 pros::Motor Intake1 (14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
 pros::Motor Intake2 (16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
@@ -75,8 +75,8 @@ void initialize() {
 
     // Autonomous Selector using LLEMU
     ez::as::auton_selector.autons_add({
-        Auton("PID auton", drive_example), 
         Auton("Right Side Red auton", right_side_r),
+        Auton("PID auton", drive_example), 
         Auton("Right Side Blue auton", right_side_b),
         Auton("Left Side Blue auton", left_side_b),
         Auton("Programming Skills", prog_skills),

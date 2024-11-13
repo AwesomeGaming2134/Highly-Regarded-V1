@@ -11,10 +11,14 @@ const int TURN_SPEED = 90;
 const int SWING_SPEED = 90;
 
 pros::adi::DigitalOut AutonClimbClamp('A');
-pros::adi::DigitalOut AutonMoGoClamp('B');
-pros::adi::DigitalOut AutonIntakeLift('C');
+pros::adi::DigitalOut AutonIntakeLift('B');
+pros::adi::DigitalOut AutonFlag('C');
+pros::adi::DigitalOut AutonMoGoClamp('D');
+pros::adi::DigitalOut AutonHopperLift('E');
+
 pros::Motor AutonIntake1 (14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
 pros::Motor AutonIntake2 (-16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
+pros::Motor AutonHopper (10, pros::v5::MotorGear::red, pros::v5::MotorUnits::counts);
 
 ///
 // Constants
@@ -322,37 +326,19 @@ void left_side_b() {
 }
 
 void right_side_r() {
-  AutonIntake1.move(-127);
-  AutonMoGoClamp.set_value(true);
-  pros::delay(100);
-  AutonIntake1.move(127);
-  chassis.pid_drive_set(16_in, DRIVE_SPEED);
+  chassis.pid_drive_set(48_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  AutonFlag.set_value(true);
+  pros::delay(500);
+  chassis.pid_drive_set(-24_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  AutonFlag.set_value(false);
+  chassis.pid_drive_set(-6_in, DRIVE_SPEED);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(-90, TURN_SPEED);
-  chassis.pid_wait();
+  AutonHopper.move_absolute(750, 100);
   AutonIntakeLift.set_value(true);
-  chassis.pid_drive_set(6_in, DRIVE_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(11_in, 20);
-  chassis.pid_wait();
-  AutonIntakeLift.set_value(false);
-  chassis.pid_drive_set(-2_in, DRIVE_SPEED);
-  chassis.pid_wait();
-  AutonIntake1.move(0);
-  chassis.pid_turn_relative_set(-60, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-42_in, 50, true);
-  pros::delay(1100);
-  AutonMoGoClamp.set_value(false);
-  AutonIntake2.move(127);
-  pros::delay(500);
-  AutonIntake1.move(127);
-  pros::delay(2000);
-  chassis.pid_turn_set(-180, TURN_SPEED);
-  chassis.pid_wait();
-  AutonIntake1.move(0);
-  chassis.pid_drive_set(50_in, 127);
-  chassis.pid_wait();
+
   
 
 
