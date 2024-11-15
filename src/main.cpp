@@ -17,9 +17,9 @@
 
 pros::adi::DigitalOut climbClamp('A');
 pros::adi::DigitalOut intakeLift('B');
-pros::adi::DigitalOut flagPiston('C');
+pros::adi::DigitalOut hopperPiston('C');
 pros::adi::DigitalOut moGoClamp('D');
-pros::adi::DigitalOut hopperPiston('E');
+pros::adi::DigitalOut flagPiston('E');
 pros::Motor Intake1 (14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
 pros::Motor Intake2 (16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
 pros::Motor Hopper (10, pros::v5::MotorGear::red, pros::v5::MotorUnits::counts);
@@ -75,6 +75,7 @@ void initialize() {
 
     // Autonomous Selector using LLEMU
     ez::as::auton_selector.autons_add({
+        Auton("Red side AWP", awp_r),
         Auton("Right Side Red auton", right_side_r),
         Auton("PID auton", drive_example), 
         Auton("Right Side Blue auton", right_side_b),
@@ -205,7 +206,7 @@ void opcontrol() {
         // Put more user control code here!
         // . . .
 
-        if (master.get_digital_new_press(DIGITAL_A)) { // <- conflict w pid tuner button
+        if (master.get_digital_new_press(DIGITAL_A)) { 
             clampOn = !clampOn;
             moGoClamp.set_value(clampOn);
         }
