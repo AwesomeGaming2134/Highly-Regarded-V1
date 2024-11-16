@@ -75,8 +75,9 @@ void initialize() {
 
     // Autonomous Selector using LLEMU
     ez::as::auton_selector.autons_add({
-        Auton("Red side AWP", awp_r),
         Auton("Blue side AWP", awp_b),
+        Auton("Red side AWP", awp_r),
+        
         Auton("Left Side Blue auton", left_side_b),
         Auton("Right Side Red auton", right_side_r),
         Auton("Programming Skills", prog_skills),
