@@ -4,7 +4,6 @@
 
 extern Drive chassis;
 
-void awp_r();
 void drive_example();
 void turn_example();
 void drive_and_turn();
@@ -15,7 +14,8 @@ void combining_movements();
 void interfered_example();
 
 void default_constants();
-void right_side_r();
-void right_side_b();
 void left_side_b();
+void right_side_r();
+void awp_r();
+void awp_b();
 void prog_skills();
