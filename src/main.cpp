@@ -158,7 +158,7 @@ void autonomous() {
 
 void opcontrol() {
     // This is preference to what you like to drive on
-    pros::motor_brake_mode_e_t driver_preference_brake = MOTOR_BRAKE_COAST;
+    pros::motor_brake_mode_e_t driver_preference_brake = pros::E_MOTOR_BRAKE_HOLD;
 
     chassis.drive_brake_set(driver_preference_brake);
 
@@ -214,6 +214,10 @@ void opcontrol() {
         if (master.get_digital_new_press(DIGITAL_X)) {
             climb = !climb;
             climbClamp.set_value(climb);
+            if(!flagDown){
+                flagDown = !flagDown;
+                flagPiston.set_value(flagDown);
+            }
         }
 
         if (master.get_digital_new_press(DIGITAL_RIGHT)) {
