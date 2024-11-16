@@ -211,17 +211,17 @@ void opcontrol() {
             moGoClamp.set_value(clampOn);
         }
 
-        if (master.get_digital_new_press(DIGITAL_Y)) {
+        if (master.get_digital_new_press(DIGITAL_X)) {
             climb = !climb;
             climbClamp.set_value(climb);
         }
 
-        if (master.get_digital_new_press(DIGITAL_X)) {
+        if (master.get_digital_new_press(DIGITAL_RIGHT)) {
             hopperDown = !hopperDown;
             hopperPiston.set_value(hopperDown);
         }
 
-        if (master.get_digital_new_press(DIGITAL_RIGHT)) {
+        if (master.get_digital_new_press(DIGITAL_Y)) {
             flagDown = !flagDown;
             flagPiston.set_value(flagDown);
         }
@@ -248,45 +248,46 @@ void opcontrol() {
             }
         }
 
-        if (master.get_digital_new_press(DIGITAL_R1)) {
-            if(lIntake == 1) {
-                lIntake = 0;
-                Intake1.move(0);
-            } else if (lIntake != 1) {
-                lIntake = 1;
-                Intake1.move(127);
-            }
+        if(master.get_digital(DIGITAL_R1)){
+            Intake1.move(127);
         }
-    
-        if(master.get_digital_new_press(DIGITAL_R2)){
-            if(lIntake == -1) {
-                lIntake = 0;
-                Intake1.move(0);
-            } else if (lIntake != -1) {
-                lIntake = -1;
-                Intake1.move(-127);
-            }
+        else if(master.get_digital(DIGITAL_R2)){
+            Intake1.move(-127);
+        }
+        else {
+            Intake1.move(0);
         }
 
-        if (master.get_digital_new_press(DIGITAL_L1)) {
-            if(uIntake == 1) {
-                uIntake = 0;
-                Intake2.move(0);
-            } else if (uIntake != 1) {
-                uIntake = 1;
-                Intake2.move(127);
-            }
+        if(master.get_digital(DIGITAL_L1)){
+            Intake2.move(127);
         }
+        else if(master.get_digital(DIGITAL_L2)){
+            Intake2.move(-127);
+        }
+        else {
+            Intake2.move(0);
+        }
+
+
+        // if (master.get_digital_new_press(DIGITAL_L1)) {
+        //     if(uIntake == 1) {
+        //         uIntake = 0;
+        //         Intake2.move(0);
+        //     } else if (uIntake != 1) {
+        //         uIntake = 1;
+        //         Intake2.move(127);
+        //     }
+        // }
         
-        if(master.get_digital_new_press(DIGITAL_L2)){
-            if(uIntake == -1) {
-                uIntake = 0;
-                Intake2.move(0);
-            } else if (uIntake != -1) {
-                uIntake = -1;
-                Intake2.move(-127);
-            }
-        }
+        // if(master.get_digital_new_press(DIGITAL_L2)){
+        //     if(uIntake == -1) {
+        //         uIntake = 0;
+        //         Intake2.move(0);
+        //     } else if (uIntake != -1) {
+        //         uIntake = -1;
+        //         Intake2.move(-127);
+        //     }
+        // }
 
         if(master.get_digital(DIGITAL_UP)){
             Hopper.move(127);
