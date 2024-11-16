@@ -278,7 +278,7 @@ void interfered_example() {
 // . . .
 // Make your own autonomous functions here!
 // . . .
-void right_side_b() {
+/*void right_side_b() {
   AutonIntake1.move(-127);
   AutonMoGoClamp.set_value(true);
   pros::delay(100);
@@ -323,6 +323,61 @@ void left_side_b() {
   chassis.pid_turn_relative_set(180, 70);
   default_constants();
   chassis.pid_drive_set(10_in, 50);
+}*/
+
+void left_side_b() {
+  chassis.pid_drive_set(50_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  AutonFlag.set_value(true);
+  pros::delay(250);
+  chassis.pid_drive_set(-30_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  AutonFlag.set_value(false);
+  chassis.pid_drive_set(-6_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(90, TURN_SPEED); //
+  AutonHopper.move_absolute(750, 100);
+  AutonIntakeLift.set_value(true);
+  chassis.pid_wait();
+  AutonIntake1.move(127);
+  chassis.pid_drive_set(36_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  AutonIntakeLift.set_value(false);
+  pros::delay(100);
+  chassis.pid_turn_relative_set(45, TURN_SPEED); //
+  chassis.pid_wait();
+  chassis.pid_drive_set(-36_in, 60);
+  pros::delay(1500);
+  AutonMoGoClamp.set_value(true);
+  AutonHopper.move_absolute(300, 100);
+  pros::delay(1000);
+  chassis.pid_wait();
+  AutonIntake2.move(127);
+  pros::delay(1000);
+  AutonIntake2.move(0);
+  chassis.drive_set(-127, -127);
+  pros::delay(100);
+  chassis.drive_set(127, 127);
+  pros::delay(100);
+  chassis.drive_set(-127, -127);
+  pros::delay(100);
+  chassis.drive_set(127, 127);
+  pros::delay(100);
+  chassis.drive_set(-127, -127);
+  pros::delay(100);
+  chassis.drive_set(127, 127);
+  pros::delay(100);
+  chassis.drive_set(-127, -127);
+  pros::delay(100);
+  chassis.drive_set(127, 127);
+  pros::delay(100);
+  chassis.drive_set(-127, -127);
+  pros::delay(100);
+  chassis.drive_set(127, 127);
+  pros::delay(100);
+  chassis.drive_set(0,0);
+  pros::delay(1000);
+  AutonIntake2.move(127);
 }
 
 void right_side_r() {
@@ -429,6 +484,59 @@ void awp_r(){
   AutonHopper.move_absolute(1750,100);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(45, TURN_SPEED);
+  chassis.pid_drive_set(46_in, DRIVE_SPEED);
+  chassis.pid_wait();
+}
+
+void awp_b(){
+  chassis.pid_drive_set(-20_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(30, TURN_SPEED); //
+  AutonHopper.move_absolute(1750, 100);
+  chassis.pid_wait();
+  AutonHopperLift.set_value(true);
+  chassis.pid_drive_set(20_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  AutonHopper.move_absolute(300, 100);
+  pros::delay(750);
+  chassis.pid_drive_set(-50_in, 90);
+  chassis.pid_wait();
+  AutonMoGoClamp.set_value(true);
+  AutonHopperLift.set_value(false);
+  pros::delay(250);
+  chassis.pid_turn_relative_set(-90, TURN_SPEED); //
+  chassis.pid_wait();
+  AutonIntake1.move(127);
+  AutonIntake2.move(127);
+  chassis.pid_drive_set(14_in, 127);
+  chassis.pid_wait();
+  chassis.pid_turn_set(180, TURN_SPEED); // no change
+  chassis.pid_wait();
+  chassis.pid_drive_set(14_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  pros::delay(500);
+  chassis.pid_drive_set(-50_in, DRIVE_SPEED);
+  chassis.pid_wait();
+  AutonIntake1.move(0);
+  AutonIntake2.move(0);
+  chassis.drive_set(-127, -127);
+  pros::delay(100);
+  chassis.drive_set(127, 127);
+  pros::delay(100);
+  chassis.drive_set(-127, -127);
+  pros::delay(100);
+  chassis.drive_set(127, 127);
+  pros::delay(100);
+  chassis.drive_set(0,0);
+  AutonIntake2.move(127);
+  pros::delay(1000);
+  AutonMoGoClamp.set_value(false);
+  AutonIntake1.move(0);
+  AutonIntake2.move(0);
+  chassis.pid_drive_set(12_in, DRIVE_SPEED);
+  AutonHopper.move_absolute(1750,100);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-45, TURN_SPEED); //
   chassis.pid_drive_set(46_in, DRIVE_SPEED);
   chassis.pid_wait();
 }
