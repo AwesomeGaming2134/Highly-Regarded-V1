@@ -213,13 +213,16 @@ void opcontrol() {
             moGoClamp.set_value(clampOn);
         }
 
-        if (master.get_digital_new_press(DIGITAL_X)) {
+        if (master.get_digital_new_press(DIGITAL_B)) {
             climb = !climb;
             climbClamp.set_value(climb);
             if(!flagDown){
                 flagDown = !flagDown;
                 flagPiston.set_value(flagDown);
             }
+            motor_args* ma = new motor_args();
+            ma->pos = 2750;
+            pros::Task hopperTask(resetMotor, ma);
         }
 
         if (master.get_digital_new_press(DIGITAL_RIGHT)) {
@@ -232,27 +235,27 @@ void opcontrol() {
             flagPiston.set_value(flagDown);
         }
 
-        if (master.get_digital_new_press(DIGITAL_B)) {
-            intake = !intake;
+        // if (master.get_digital_new_press(DIGITAL_X)) {
+        //     intake = !intake;
 
-            if(Hopper.get_position() < 750 && intake) {
-                hopperCurPos = Hopper.get_position();
-                hopperMoved = true;
-                motor_args* ma = new motor_args();
-                ma->pos = 750;
-                pros::Task hopperTask(resetMotor, ma);
-            }
+        //     if(Hopper.get_position() < 750 && intake) {
+        //         hopperCurPos = Hopper.get_position();
+        //         hopperMoved = true;
+        //         motor_args* ma = new motor_args();
+        //         ma->pos = 750;
+        //         pros::Task hopperTask(resetMotor, ma);
+        //     }
 
-            intakeLift.set_value(intake);
+        //     intakeLift.set_value(intake);
 
-            if(hopperMoved && !intake) {
-                hopperMoved = false;
-                motor_args* ma = new motor_args();
-                ma->pos = hopperCurPos;
-                pros::Task hopperTask(resetMotor, ma);
-                hopperCurPos = 0;
-            }
-        }
+        //     if(hopperMoved && !intake) {
+        //         hopperMoved = false;
+        //         motor_args* ma = new motor_args();
+        //         ma->pos = hopperCurPos;
+        //         pros::Task hopperTask(resetMotor, ma);
+        //         hopperCurPos = 0;
+        //     }
+        // }
 
         if(master.get_digital(DIGITAL_R1)){
             Intake1.move(127);
