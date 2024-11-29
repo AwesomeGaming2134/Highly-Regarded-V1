@@ -17,15 +17,15 @@ pros::adi::DigitalOut AutonMoGoClamp('D');
 pros::adi::DigitalOut AutonFlag('E');
 
 pros::Motor AutonIntake1 (14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
-pros::Motor AutonIntake2 (16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
-pros::Motor AutonHopper (10, pros::v5::MotorGear::red, pros::v5::MotorUnits::counts);
+pros::Motor AutonIntake2 (15, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
+pros::Motor AutonHopper (16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
 
 ///
 // Constants
 ///
 void default_constants() {
   chassis.pid_heading_constants_set(11, 0, 20);
-  chassis.pid_drive_constants_set(7.69, 0.25, 11.5);
+  chassis.pid_drive_constants_set(7.95, 0.25, 11.5);
   chassis.pid_turn_constants_set(4, 0.2, 32, 15);
   chassis.pid_swing_constants_set(6, 0, 65);
 
@@ -49,15 +49,15 @@ void drive_example() {
   // The third parameter is a boolean (true or false) for enabling/disabling a slew at the start of drive motions
   // for slew, only enable it when the drive distance is greater than the slew distance + a few inches
 
-  chassis.pid_drive_set(96_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  pros::delay(2000);
+  // chassis.pid_drive_set(96_in, DRIVE_SPEED, true);
+  // chassis.pid_wait();
+  // pros::delay(2000);
 
-  chassis.pid_drive_set(-48_in, DRIVE_SPEED);
-  chassis.pid_wait();
-  pros::delay(2000);
+  // chassis.pid_drive_set(-48_in, DRIVE_SPEED);
+  // chassis.pid_wait();
+  // pros::delay(2000);
 
-  chassis.pid_drive_set(-24_in, DRIVE_SPEED);
+  chassis.pid_drive_set(24_in, DRIVE_SPEED);
   chassis.pid_wait();
   pros::delay(2000);
 
@@ -65,17 +65,21 @@ void drive_example() {
   chassis.pid_wait();
   pros::delay(2000);
 
-  chassis.pid_drive_set(-6_in, DRIVE_SPEED);
+  chassis.pid_drive_set(-12_in, DRIVE_SPEED);
   chassis.pid_wait();
   pros::delay(2000);
 
-  chassis.pid_drive_set(-3_in, DRIVE_SPEED);
-  chassis.pid_wait();
-  pros::delay(2000);
+  // chassis.pid_drive_set(-6_in, DRIVE_SPEED);
+  // chassis.pid_wait();
+  // pros::delay(2000);
 
-  chassis.pid_drive_set(-3_in, DRIVE_SPEED);
-  chassis.pid_wait();
-  pros::delay(2000);
+  // chassis.pid_drive_set(-3_in, DRIVE_SPEED);
+  // chassis.pid_wait();
+  // pros::delay(2000);
+
+  // chassis.pid_drive_set(-3_in, DRIVE_SPEED);
+  // chassis.pid_wait();
+  // pros::delay(2000);
 }
 
 ///
@@ -381,6 +385,7 @@ void left_side_b() {
 }
 
 void right_side_r() {
+  AutonMoGoClamp.set_value(true);
   chassis.pid_drive_set(50_in, DRIVE_SPEED);
   chassis.pid_wait();
   AutonFlag.set_value(true);
@@ -403,7 +408,7 @@ void right_side_r() {
   chassis.pid_wait();
   chassis.pid_drive_set(-36_in, 60);
   pros::delay(1500);
-  AutonMoGoClamp.set_value(true);
+  AutonMoGoClamp.set_value(false);
   AutonHopper.move_absolute(300, 100);
   pros::delay(1000);
   chassis.pid_wait();
@@ -436,19 +441,21 @@ void right_side_r() {
 }
 
 void awp_r(){
+  AutonMoGoClamp.set_value(true);
   chassis.pid_drive_set(-20_in, DRIVE_SPEED);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(-30, TURN_SPEED);
-  AutonHopper.move_absolute(1750, 100);
+  AutonHopper.move(127);
   chassis.pid_wait();
   AutonHopperLift.set_value(true);
   chassis.pid_drive_set(20_in, DRIVE_SPEED);
   chassis.pid_wait();
-  AutonHopper.move_absolute(300, 100);
+  AutonHopper.move(-127);
   pros::delay(750);
   chassis.pid_drive_set(-50_in, 90);
   chassis.pid_wait();
-  AutonMoGoClamp.set_value(true);
+  AutonHopper.move(0);
+  AutonMoGoClamp.set_value(false);
   AutonHopperLift.set_value(false);
   pros::delay(250);
   chassis.pid_turn_relative_set(90, TURN_SPEED);
@@ -462,7 +469,7 @@ void awp_r(){
   chassis.pid_drive_set(14_in, DRIVE_SPEED);
   chassis.pid_wait();
   pros::delay(500);
-  chassis.pid_drive_set(-50_in, DRIVE_SPEED);
+  chassis.pid_drive_set(-38_in, DRIVE_SPEED);
   chassis.pid_wait();
   AutonIntake1.move(0);
   AutonIntake2.move(0);
@@ -477,14 +484,12 @@ void awp_r(){
   chassis.drive_set(0,0);
   AutonIntake2.move(127);
   pros::delay(1000);
-  AutonMoGoClamp.set_value(false);
   AutonIntake1.move(0);
   AutonIntake2.move(0);
-  chassis.pid_drive_set(12_in, DRIVE_SPEED);
-  AutonHopper.move_absolute(1750,100);
+  AutonHopper.move_absolute(1750,200);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(45, TURN_SPEED);
-  chassis.pid_drive_set(46_in, DRIVE_SPEED);
+  chassis.pid_drive_set(42_in, DRIVE_SPEED);
   chassis.pid_wait();
 }
 
