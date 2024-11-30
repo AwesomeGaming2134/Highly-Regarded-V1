@@ -623,7 +623,7 @@ void prog_skills() {
   chassis.pid_wait();
   chassis.pid_drive_set(120_in, 127);
   chassis.pid_wait();
-  chassis.pid_turn_set(-45, TURN_SPEED);
+  chassis.pid_turn_set(-540, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(30_in, DRIVE_SPEED);
 
