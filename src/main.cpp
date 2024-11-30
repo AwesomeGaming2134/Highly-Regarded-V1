@@ -22,7 +22,7 @@ pros::adi::DigitalOut moGoClamp('D');
 pros::adi::DigitalOut flagPiston('E');
 pros::Motor Intake1 (14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
 pros::Motor Intake2 (15, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
-pros::Motor Hopper (16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
+pros::Motor Hopper (-16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
 pros::Controller master (pros::E_CONTROLLER_MASTER);
 
 
@@ -48,18 +48,18 @@ typedef struct {
     int pos;
 } motor_args;
 
-void setHopper(int speed) {
-    Hopper.move(speed);
-}
+// void setHopper(int speed) {
+//     Hopper.move(speed);
+// }
 
-void liftTask() {
-    while (true){
-        Hopper.brake();
-        pros::delay(20);
-    }
-}
+// void liftTask() {
+//     while (true){
+//         Hopper.brake();
+//         pros::delay(20);
+//     }
+// }
 
-pros::Task LiftTask(liftTask);
+// pros::Task LiftTask(liftTask);
 
 //ez::PID hopperPID{50, 0, 0, 0, "Hopper"};
 
@@ -78,20 +78,18 @@ pros::Task LiftTask(liftTask);
 }*/
 //pros::Task Lift_Task(lift_task);
 
-// motor_args* ma = new motor_args();
+bool hopperOn = false;
 
-// bool hopperOn = false;
-
-// void resetMotor(void* params){
-//     hopperOn = true;
-//     int hpos = ((motor_args*)params)->pos;
-//     while(Hopper.get_position() > hpos + 5 || Hopper.get_position() < hpos - 5) {
-//         hpos = ((motor_args*)params)->pos;
-//         Hopper.move_absolute(hpos, 100);
-//         pros::delay(20);
-//     }
-//     hopperOn = false;
-// }
+void resetMotor(void* params){
+    hopperOn = true;
+    int hpos = ((motor_args*)params)->pos;
+    while(Hopper.get_position() > hpos + 5 || Hopper.get_position() < hpos - 5) {
+        hpos = ((motor_args*)params)->pos;
+        Hopper.move_absolute(hpos, 100);
+        pros::delay(20);
+    }
+    hopperOn = false;
+}
 
 // void runHopper(void* params) {
 //     int pos = ((motor_args*)params)->pos;
@@ -120,16 +118,17 @@ void initialize() {
 
     // Autonomous Selector using LLEMU
     ez::as::auton_selector.autons_add({
+        //Auton("Hopper Test", hopper_test),
         //Auton("PID auton", drive_example), 
         
-        //Auton("Blue side AWP", awp_b),
+        Auton("Prog Skills", prog_skills),
+
+        Auton("Blue side AWP", awp_b),
         Auton("Red side AWP", awp_r),
         
         Auton("Left Side Blue auton", left_side_b),
         Auton("Right Side Red auton", right_side_r),
-        Auton("Programming Skills", prog_skills),
 
-        
         Auton("Example Turn\n\nTurn 3 times.", drive_example),
         Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
         Auton("Drive and Turn\n\nSlow down during drive.", wait_until_change_speed),
@@ -274,7 +273,7 @@ void opcontrol() {
             pros::Task hopperTask(resetMotor, ma);
         }
 
-        if (master.get_digital_new_press(DIGITAL_RIGHT)) {
+        if (master.get_digital_new_press(DIGITAL_UP)) {
             hopperDown = !hopperDown;
             hopperPiston.set_value(hopperDown);
         }
@@ -291,10 +290,10 @@ void opcontrol() {
         //         hopperCurPos = Hopper.get_position();
         //         hopperMoved = true;
         //         motor_args* ma = new motor_args();
-        //         ma->pos = 750;
+        //         ma->pos = 7504;
         //         pros::Task hopperTask(resetMotor, ma);
         //     }
-        if (master.get_digital_new_press(DIGITAL_X)) {
+        if (master.get_digital_new_press(DIGITAL_LEFT)) {
             intake = !intake;
 
             if(hopperCurPos < 750 && intake) {
@@ -363,7 +362,7 @@ void opcontrol() {
         //     }
         // }
 
-        if(master.get_digital(DIGITAL_UP)){
+        if(master.get_digital(DIGITAL_RIGHT)){
             //hopperCurPos += 5;
             //hopperPID.target_set(hopperCurPos);
             Hopper.move(127);
