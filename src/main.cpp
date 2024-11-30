@@ -80,18 +80,18 @@ pros::Task LiftTask(liftTask);
 
 // motor_args* ma = new motor_args();
 
-// bool hopperOn = false;
+bool hopperOn = false;
 
-// void resetMotor(void* params){
-//     hopperOn = true;
-//     int hpos = ((motor_args*)params)->pos;
-//     while(Hopper.get_position() > hpos + 5 || Hopper.get_position() < hpos - 5) {
-//         hpos = ((motor_args*)params)->pos;
-//         Hopper.move_absolute(hpos, 100);
-//         pros::delay(20);
-//     }
-//     hopperOn = false;
-// }
+void resetMotor(void* params){
+    hopperOn = true;
+    int hpos = ((motor_args*)params)->pos;
+    while(Hopper.get_position() > hpos + 5 || Hopper.get_position() < hpos - 5) {
+        hpos = ((motor_args*)params)->pos;
+        Hopper.move_absolute(hpos, 100);
+        pros::delay(20);
+    }
+    hopperOn = false;
+}
 
 // void runHopper(void* params) {
 //     int pos = ((motor_args*)params)->pos;
@@ -123,10 +123,10 @@ void initialize() {
         //Auton("PID auton", drive_example), 
         
         //Auton("Blue side AWP", awp_b),
-        Auton("Red side AWP", awp_r),
         
         Auton("Left Side Blue auton", left_side_b),
         Auton("Right Side Red auton", right_side_r),
+        Auton("Red side AWP", awp_r),
         Auton("Programming Skills", prog_skills),
 
         

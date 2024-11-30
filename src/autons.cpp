@@ -330,7 +330,8 @@ void left_side_b() {
 }*/
 
 void left_side_b() {
-  chassis.pid_drive_set(50_in, DRIVE_SPEED);
+  chassis.pid_drive_set(44_in, DRIVE_SPEED);
+  AutonMoGoClamp.set_value(true);
   chassis.pid_wait();
   AutonFlag.set_value(true);
   pros::delay(250);
@@ -344,15 +345,15 @@ void left_side_b() {
   AutonIntakeLift.set_value(true);
   chassis.pid_wait();
   AutonIntake1.move(127);
-  chassis.pid_drive_set(36_in, DRIVE_SPEED);
+  chassis.pid_drive_set(48_in, DRIVE_SPEED);
   chassis.pid_wait();
   AutonIntakeLift.set_value(false);
   pros::delay(100);
-  chassis.pid_turn_relative_set(45, TURN_SPEED); //
+  chassis.pid_turn_relative_set(60, TURN_SPEED); //
   chassis.pid_wait();
   chassis.pid_drive_set(-36_in, 60);
   pros::delay(1500);
-  AutonMoGoClamp.set_value(true);
+  AutonMoGoClamp.set_value(false);
   AutonHopper.move_absolute(300, 100);
   pros::delay(1000);
   chassis.pid_wait();
