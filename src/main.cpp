@@ -188,7 +188,7 @@ void autonomous() {
     chassis.pid_targets_reset();                // Resets PID targets to 0
     chassis.drive_imu_reset();                  // Reset gyro position to 0
     chassis.drive_sensor_reset();               // Reset drive sensors to 0
-    chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
+    chassis.drive_brake_set(MOTOR_BRAKE_COAST);  // Set motors to hold.  This helps autonomous consistency
 
     ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
     master.rumble(".");

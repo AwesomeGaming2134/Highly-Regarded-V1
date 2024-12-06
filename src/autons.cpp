@@ -360,7 +360,6 @@ void left_side_b() {
   chassis.pid_drive_set(-36_in, 60);
   pros::delay(1500);
   AutonMoGoClamp.set_value(false);
-  AutonHopper.move_absolute(300, 100);
   pros::delay(1000);
   chassis.pid_wait();
   AutonIntake2.move(127);
