@@ -22,7 +22,7 @@ pros::adi::DigitalOut moGoClamp('D');
 pros::adi::DigitalOut flagPiston('E');
 pros::Motor Intake1 (14, pros::v5::MotorGears::green, pros::v5::MotorUnits::counts);
 pros::Motor Intake2 (15, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
-pros::Motor Hopper (16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
+pros::Motor Hopper (-16, pros::v5::MotorGear::green, pros::v5::MotorUnits::counts);
 pros::Controller master (pros::E_CONTROLLER_MASTER);
 
 
@@ -48,18 +48,18 @@ typedef struct {
     int pos;
 } motor_args;
 
-void setHopper(int speed) {
-    Hopper.move(speed);
-}
+// void setHopper(int speed) {
+//     Hopper.move(speed);
+// }
 
-void liftTask() {
-    while (true){
-        Hopper.brake();
-        pros::delay(20);
-    }
-}
+// void liftTask() {
+//     while (true){
+//         Hopper.brake();
+//         pros::delay(20);
+//     }
+// }
 
-pros::Task LiftTask(liftTask);
+// pros::Task LiftTask(liftTask);
 
 //ez::PID hopperPID{50, 0, 0, 0, "Hopper"};
 
@@ -120,6 +120,7 @@ void initialize() {
 
     // Autonomous Selector using LLEMU
     ez::as::auton_selector.autons_add({
+        //Auton("Hopper Test", hopper_test),
         //Auton("PID auton", drive_example), 
         
         //Auton("Blue side AWP", awp_b),
@@ -274,7 +275,7 @@ void opcontrol() {
             pros::Task hopperTask(resetMotor, ma);
         }
 
-        if (master.get_digital_new_press(DIGITAL_RIGHT)) {
+        if (master.get_digital_new_press(DIGITAL_UP)) {
             hopperDown = !hopperDown;
             hopperPiston.set_value(hopperDown);
         }
@@ -291,10 +292,10 @@ void opcontrol() {
         //         hopperCurPos = Hopper.get_position();
         //         hopperMoved = true;
         //         motor_args* ma = new motor_args();
-        //         ma->pos = 750;
+        //         ma->pos = 7504;
         //         pros::Task hopperTask(resetMotor, ma);
         //     }
-        if (master.get_digital_new_press(DIGITAL_X)) {
+        if (master.get_digital_new_press(DIGITAL_LEFT)) {
             intake = !intake;
 
             if(hopperCurPos < 750 && intake) {
@@ -363,7 +364,7 @@ void opcontrol() {
         //     }
         // }
 
-        if(master.get_digital(DIGITAL_UP)){
+        if(master.get_digital(DIGITAL_RIGHT)){
             //hopperCurPos += 5;
             //hopperPID.target_set(hopperCurPos);
             Hopper.move(127);
