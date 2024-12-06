@@ -84,10 +84,9 @@ bool hopperOn = false;
 
 void resetMotor(void* params){
     hopperOn = true;
-    int hpos = ((motor_args*)params)->pos;
-    while(Hopper.get_position() > hpos + 5 || Hopper.get_position() < hpos - 5) {
-        hpos = ((motor_args*)params)->pos;
-        Hopper.move_absolute(hpos, 100);
+    int pos = ((motor_args*)params)->pos;
+    while(Hopper.get_position() > pos + 5 || Hopper.get_position() < pos - 5) {
+        Hopper.move_absolute(pos, 100);
         pros::delay(20);
     }
     hopperOn = false;
@@ -146,7 +145,6 @@ void initialize() {
     Hopper.tare_position();
     //hopperPID.exit_condition_set(80, 50, 300, 150, 500, 500);
     Hopper.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-    Hopper.brake();
     master.rumble(".");
 }
 
@@ -156,7 +154,8 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {
-    // . . .
+    // . . .    Hopper.brake();
+
 }
 
 /**
@@ -295,33 +294,34 @@ void opcontrol() {
         //         ma->pos = 7504;
         //         pros::Task hopperTask(resetMotor, ma);
         //     }
-        if (master.get_digital_new_press(DIGITAL_LEFT)) {
-            intake = !intake;
 
-            if(hopperCurPos < 750 && intake) {
-                /*hopperMoved = true;
-                hopperPID.target_set(750);
-                hopperCurPos = 750;*/
-                Hopper.move_absolute(750,127);
-            }
+        // if (master.get_digital_new_press(DIGITAL_LEFT)) {
+        //     intake = !intake;
 
-        //     intakeLift.set_value(intake);
+        //     if(hopperCurPos < 750 && intake) {
+        //         /*hopperMoved = true;
+        //         hopperPID.target_set(750);
+        //         hopperCurPos = 750;*/
+        //         Hopper.move_absolute(750,127);
+        //     }
 
+        // //     intakeLift.set_value(intake);
+
+        // //     if(hopperMoved && !intake) {
+        // //         hopperMoved = false;
+        // //         motor_args* ma = new motor_args();
+        // //         ma->pos = hopperCurPos;
+        // //         pros::Task hopperTask(resetMotor, ma);
+        // //         hopperCurPos = 0;
+        // //     }
+        // // }
         //     if(hopperMoved && !intake) {
-        //         hopperMoved = false;
-        //         motor_args* ma = new motor_args();
-        //         ma->pos = hopperCurPos;
-        //         pros::Task hopperTask(resetMotor, ma);
-        //         hopperCurPos = 0;
+        //         /*hopperMoved = false;
+        //         hopperPID.target_set(0);
+        //         hopperCurPos = 0;*/
+        //         Hopper.move_absolute(0,127);
         //     }
         // }
-            if(hopperMoved && !intake) {
-                /*hopperMoved = false;
-                hopperPID.target_set(0);
-                hopperCurPos = 0;*/
-                Hopper.move_absolute(0,127);
-            }
-        }
 
         if(master.get_digital(DIGITAL_R1)){
             Intake1.move(127);
